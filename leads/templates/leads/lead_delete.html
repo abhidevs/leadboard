@@ -1,0 +1,10 @@
+{% extends 'base.html' %} {% block content %}
+<a href="{% url 'leads:lead-list' %}">Back to All Leads</a>
+<div class="lead">
+  <h1>Are you sure you want to delete Lead: {{ lead.first_name }} {{ lead.last_name }}</h1>
+  <form method="post">
+    {% csrf_token %} {{ form.as_p }}
+    <button type="submit">Delete</button>
+  </form>
+</div>
+{% endblock content %}
