@@ -61,7 +61,7 @@ class LeadCreateView(generic.CreateView):
         return reverse("leads:lead-list")
 
     def form_valid(self, form):
-        # TODO Send email
+        # Send email on new lead creation
         send_mail(
             subject="A new lead has been created",
             message="Go to the LeadBoard to view the newly created lead.",
