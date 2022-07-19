@@ -4,7 +4,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.views import LoginView, LogoutView
 
-from leads.views import LandingPageView, SignupView, landing_page
+from leads.views import LandingPageView, SignupView
 
 
 urlpatterns = [
