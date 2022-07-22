@@ -28,6 +28,9 @@
       <a href="{% url 'leads:lead-list' %}" class="mr-5 hover:text-gray-900"
         >Leads</a
       >
+      <a href="{% url 'agents:agent-list' %}" class="mr-5 hover:text-gray-900"
+        >Agents</a
+      >
       {% else %}
       <a href="{% url 'signup' %}" class="mr-5 hover:text-gray-900">Sign up</a>
       {% endif %}

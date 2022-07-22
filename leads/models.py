@@ -36,7 +36,6 @@ class Agent(models.Model):
 def post_user_created_signal(sender, instance, created, **kwargs):
     if created:
         org_name = f"{instance.first_name} {instance.last_name}"
-        print(org_name)
         Organisation.objects.create(org_name=org_name, admin=instance)
 
 
