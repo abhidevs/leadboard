@@ -4,7 +4,8 @@ from django.contrib.auth.models import AbstractUser
 
 
 class User(AbstractUser):
-    pass
+    is_admin = models.BooleanField(default=True)
+    is_agent = models.BooleanField(default=False)
 
 
 class Organisation(models.Model):
