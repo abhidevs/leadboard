@@ -28,7 +28,7 @@ class LeadListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self):
         user = self.request.user
-        queryset = Lead.objects.all()
+        queryset = Lead.objects.filter(agent__isnull=False)
 
         if user.is_admin:
             queryset = queryset.filter(organisation=user.organisation)
@@ -36,6 +36,18 @@ class LeadListView(LoginRequiredMixin, generic.ListView):
             queryset = queryset.filter(organisation=user.agent.organisation, agent__user=user)
         
         return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super(LeadListView, self).get_context_data(**kwargs)
+        user = self.request.user
+
+        if user.is_admin:
+            unassign_leads = Lead.objects.filter(organisation=user.organisation, agent__isnull=True)
+            context.update({
+                "unassign_leads":unassign_leads
+            })
+        return context
+    
 
 
 class LeadDetailView(LoginRequiredMixin, generic.DetailView):
