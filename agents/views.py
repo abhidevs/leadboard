@@ -1,5 +1,8 @@
+import random
 from django.urls import reverse
 from django.views import generic
+from django.core.mail import send_mail
+
 from agents.forms import AgentModelForm
 from agents.mixins import LoginAndAdminRequiredMixin
 from leads.models import Agent
@@ -22,9 +25,23 @@ class AgentCreateView(LoginAndAdminRequiredMixin, generic.CreateView):
         return reverse("agents:agent-list")
 
     def form_valid(self, form):
-        agent = form.save(commit=False)
-        agent.organisation = self.request.user.organisation
-        agent.save()
+        user = form.save(commit=False)
+        user.is_agent = True
+        user.is_admin = False
+        user.set_password(f"{random.randint(10000000, 99999999)}")
+        user.save()
+
+        current_user = self.request.user
+        Agent.objects.create(
+            user=user,
+            organisation=current_user.organisation
+        )
+        send_mail(
+            subject="%s invited you to join %s on LeadBoard" % (current_user.first_name, current_user.organisation),
+            message="%s invited you to join %s on LeadBoard. Login to your account to start working." % (current_user.first_name, current_user.organisation),
+            from_email="info@leadboard.com",
+            recipient_list=[user.email]
+        )
         return super(AgentCreateView, self).form_valid(form)
 
 
