@@ -7,7 +7,7 @@ from agents.mixins import LoginAndAdminRequiredMixin
 
 from leads.forms import LeadForm, LeadModelForm
 from .models import Agent, Lead
-from .forms import CustomUserCreationForm
+from .forms import AssignAgentForm, CustomUserCreationForm
 
 
 class LandingPageView(generic.TemplateView):
@@ -106,3 +106,25 @@ class LeadDeleteView(LoginAndAdminRequiredMixin, generic.DeleteView):
 
     def get_success_url(self):
         return reverse("leads:lead-list")
+
+
+class AssignAgentView(LoginAndAdminRequiredMixin, generic.FormView):
+    template_name = "leads/agent_assign.html"
+    form_class = AssignAgentForm
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super(AssignAgentView, self).get_form_kwargs(**kwargs)
+        kwargs.update({
+            "request": self.request
+        })
+        return kwargs
+
+    def get_success_url(self):
+        return reverse("leads:lead-list")
+
+    def form_valid(self, form):
+        agent = form.cleaned_data["agent"]
+        lead = Lead.objects.get(id=self.kwargs["pk"])
+        lead.agent = agent
+        lead.save()
+        return super(AssignAgentView, self).form_valid(form)
