@@ -1,3 +1,4 @@
+from unicodedata import category
 from django.shortcuts import redirect, render, reverse
 from django.http import HttpResponse
 from django.views import generic
@@ -6,7 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from agents.mixins import LoginAndAdminRequiredMixin
 
 from leads.forms import LeadForm, LeadModelForm
-from .models import Agent, Lead
+from .models import Agent, Category, Lead
 from .forms import AssignAgentForm, CustomUserCreationForm
 
 
@@ -128,3 +129,35 @@ class AssignAgentView(LoginAndAdminRequiredMixin, generic.FormView):
         lead.agent = agent
         lead.save()
         return super(AssignAgentView, self).form_valid(form)
+
+
+class CategoryListView(LoginRequiredMixin, generic.ListView):
+    template_name = "leads/category_list.html"
+    context_object_name = "category_list"
+
+    def get_context_data(self, **kwargs):
+        context = super(CategoryListView, self).get_context_data(**kwargs)
+        user = self.request.user
+        queryset = Lead.objects.all()
+
+        if user.is_admin:
+            queryset = queryset.filter(organisation=user.organisation)
+        elif user.is_agent:
+            queryset = queryset.filter(organisation=user.agent.organisation)
+
+        context.update({
+            "unassigned_lead_count": queryset.filter(category__isnull=True).count()
+        })
+        return context
+    
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Category.objects.all()
+
+        if user.is_admin:
+            queryset = queryset.filter(organisation=user.organisation)
+        elif user.is_agent:
+            queryset = queryset.filter(organisation=user.agent.organisation)
+        
+        return queryset
