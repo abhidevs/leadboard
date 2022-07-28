@@ -7,7 +7,7 @@ from agents.mixins import LoginAndAdminRequiredMixin
 
 from leads.forms import LeadForm, LeadModelForm
 from .models import Agent, Category, Lead
-from .forms import AssignAgentForm, CustomUserCreationForm
+from .forms import AssignAgentForm, CustomUserCreationForm, LeadCategoryUpdateForm
 
 
 class LandingPageView(generic.TemplateView):
@@ -184,3 +184,22 @@ class CategoryDetailView(generic.DetailView):
             queryset = queryset.filter(organisation=user.agent.organisation)
         
         return queryset
+
+
+class LeadCategoryUpdateView(LoginRequiredMixin, generic.UpdateView):
+    template_name = "leads/lead_category_update.html"
+    form_class = LeadCategoryUpdateForm
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Lead.objects.all()
+
+        if user.is_admin:
+            queryset = queryset.filter(organisation=user.organisation)
+        elif user.is_agent:
+            queryset = queryset.filter(organisation=user.agent.organisation, agent__user=user)
+        
+        return queryset
+
+    def get_success_url(self):
+        return reverse("leads:lead-detail", kwargs={"pk": self.get_object().id})
