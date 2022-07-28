@@ -1,4 +1,3 @@
-from unicodedata import category
 from django.shortcuts import redirect, render, reverse
 from django.http import HttpResponse
 from django.views import generic
@@ -149,7 +148,31 @@ class CategoryListView(LoginRequiredMixin, generic.ListView):
             "unassigned_lead_count": queryset.filter(category__isnull=True).count()
         })
         return context
-    
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Category.objects.all()
+
+        if user.is_admin:
+            queryset = queryset.filter(organisation=user.organisation)
+        elif user.is_agent:
+            queryset = queryset.filter(organisation=user.agent.organisation)
+        
+        return queryset
+
+
+class CategoryDetailView(generic.DetailView):
+    template_name = "leads/category_detail.html"
+    context_object_name = "category"
+
+    # def get_context_data(self, **kwargs):
+    #     context = super(CategoryDetailView, self).get_context_data(**kwargs)
+    #     queryset = self.get_object().leads.all()
+
+    #     context.update({
+    #         "leads": queryset
+    #     })
+    #     return context
 
     def get_queryset(self):
         user = self.request.user

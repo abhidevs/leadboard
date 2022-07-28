@@ -4,6 +4,8 @@
     <div class="w-full py-6 flex items-center justify-between border-b border-gray-200">
       <div>
         <h1 class="text-3xl text-gray-800">All Leads</h1>
+        <a class="text-indigo-500 hover:text-gray-500"
+          href="{% url 'leads:category-list' %}">View Categories</a>
       </div>
       {% if request.user.is_admin %}
       <div>
