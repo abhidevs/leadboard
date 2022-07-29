@@ -1,4 +1,6 @@
 {% extends 'base.html' %} {% block content %}
+{% load tailwind_filters %}
+
 <section class="text-gray-600 body-font overflow-hidden">
     <div class="container px-5 py-24 mx-auto">
         <div class="lg:w-4/5 mx-auto flex flex-wrap">
@@ -18,9 +20,10 @@
                         class="flex-grow border-b-2 border-gray-300 py-2 text-lg px-1">Edit</a>
                     {% endif %}
                 </div>
-                <form method="post">
-                    {% csrf_token %} {{ form.as_p }}
-                    <div class="flex justify-between mt-8">
+                <form class="py-4" method="post">
+                    {% csrf_token %} 
+                    {{ form|crispy }}
+                    <div class="flex justify-between mt-16">
                         <button type="submit"
                             class="flex mr-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">
                             Update
@@ -33,4 +36,5 @@
         </div>
     </div>
 </section>
+
 {% endblock content %}
