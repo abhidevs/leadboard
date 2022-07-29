@@ -1,10 +1,26 @@
-{% extends 'base.html' %} {% block content %}
-<a href="{% url 'agents:agent-list' %}">Back to All Agents</a>
-<div class="agent">
-  <h1>Create a new agent</h1>
-  <form method="post">
-    {% csrf_token %} {{ form.as_p }}
-    <button type="submit">Create</button>
-  </form>
+{% extends 'base.html' %} {% block content %} 
+{% load tailwind_filters %}
+
+<div class="flex">
+  <div class="min-w-[400px] m-auto mb-16">
+    <div class="mt-4 py-2 mb-2">
+      <h1 class="text-4xl">Create New Lead</h1>
+      <a
+        class="text-gray-500 hover:text-indigo-500"
+        href="{% url 'agents:agent-list' %}">
+        Back to All Agents
+      </a>
+    </div>
+    <form class="border-t pt-2" method="post">
+      {% csrf_token %} {{ form|crispy }}
+      <button
+        class="w-full bg-indigo-500 hover:bg-indigo-600 mt-2 px-3 py-2 rounded-md text-white"
+        type="submit"
+      >
+        Create
+      </button>
+    </form>
+  </div>
 </div>
+
 {% endblock content %}
