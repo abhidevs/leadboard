@@ -42,9 +42,9 @@ class LeadListView(LoginRequiredMixin, generic.ListView):
         user = self.request.user
 
         if user.is_admin:
-            unassign_leads = Lead.objects.filter(organisation=user.organisation, agent__isnull=True)
+            unassigned_leads = Lead.objects.filter(organisation=user.organisation, agent__isnull=True)
             context.update({
-                "unassign_leads":unassign_leads
+                "unassigned_leads":unassigned_leads
             })
         return context
     
