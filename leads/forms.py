@@ -7,7 +7,7 @@ from leads.models import Agent, Lead, User
 class LeadModelForm(forms.ModelForm):
     class Meta:
         model = Lead
-        fields = '__all__'
+        exclude = ('organisation', 'category',)
 
 
 class LeadForm(forms.Form):

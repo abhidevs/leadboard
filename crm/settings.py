@@ -136,16 +136,15 @@ STATIC_ROOT = "static_root"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
+# Auth settings
 AUTH_USER_MODEL = 'leads.User'
-
+LOGIN_REDIRECT_URL = "/leads"
+LOGIN_URL = "/login"
+LOGOUT_REDIRECT_URL = "/"
 
 # Email sender settings
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-LOGIN_REDIRECT_URL = "/leads"
-
-LOGIN_URL = "/login"
-
+# Crispy forms settings
 CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 CRISPY_TEMPLATE_PACK = 'tailwind'
