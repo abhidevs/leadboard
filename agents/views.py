@@ -1,4 +1,5 @@
 import random
+import environ
 from django.urls import reverse
 from django.views import generic
 from django.core.mail import send_mail
@@ -6,6 +7,10 @@ from django.core.mail import send_mail
 from agents.forms import AgentModelForm
 from agents.mixins import LoginAndAdminRequiredMixin
 from leads.models import Agent
+
+
+env = environ.Env()
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
 
 
 class AgentListView(LoginAndAdminRequiredMixin,  generic.ListView):
@@ -39,7 +44,7 @@ class AgentCreateView(LoginAndAdminRequiredMixin, generic.CreateView):
         send_mail(
             subject="%s invited you to join %s on LeadBoard" % (current_user.first_name, current_user.organisation),
             message="%s invited you to join %s on LeadBoard. Login to your account to start working." % (current_user.first_name, current_user.organisation),
-            from_email="info@leadboard.com",
+            from_email=DEFAULT_FROM_EMAIL,
             recipient_list=[user.email]
         )
         return super(AgentCreateView, self).form_valid(form)

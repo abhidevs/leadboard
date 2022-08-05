@@ -160,8 +160,8 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
 CRISPY_TEMPLATE_PACK = 'tailwind'
 
 
-# Security settings for production
 if not DEBUG:
+    # Security settings for production
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
@@ -174,3 +174,13 @@ if not DEBUG:
     X_FRAME_OPTIONS = "DENY"
 
     ALLOWED_HOSTS = ["*"]
+
+    # Mail settings for production
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    MAILER_API_KEY = env("MAILER_API_KEY")
+    EMAIL_HOST = env("EMAIL_HOST")
+    EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+    EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+    EMAIL_PORT = env("EMAIL_PORT")
+    EMAIL_USE_TLS = True
+    DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
