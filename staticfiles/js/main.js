@@ -1,1 +1,0 @@
-console.log("Say hello to JS");
