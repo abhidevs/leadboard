@@ -4,10 +4,15 @@ from django.views import generic
 from django.core.mail import send_mail
 from django.contrib.auth.mixins import LoginRequiredMixin
 from agents.mixins import LoginAndAdminRequiredMixin
+import environ
 
 from leads.forms import LeadForm, LeadModelForm
 from .models import Agent, Category, Lead
 from .forms import AssignAgentForm, CustomUserCreationForm, LeadCategoryUpdateForm
+
+
+env = environ.Env()
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL")
 
 
 class LandingPageView(generic.TemplateView):
@@ -79,11 +84,15 @@ class LeadCreateView(LoginAndAdminRequiredMixin, generic.CreateView):
         lead.save()
 
         # Send email on new lead creation
+        subject = "A new lead has been created"
+        leads_link = "%s/leads" % self.request.get_host()
+        message = "A new lead has been created with name %s %s.\nGo to the LeadBoard to view or modify the newly created lead\n%s" % (lead.first_name, lead.last_name, leads_link)
+        admin_user_email = self.request.user.email
         send_mail(
-            subject="A new lead has been created",
-            message="Go to the LeadBoard to view the newly created lead.",
-            from_email="info@leadboard.com",
-            recipient_list=["user@gmail.com"]
+            subject=subject,
+            message=message,
+            from_email=DEFAULT_FROM_EMAIL,
+            recipient_list=[admin_user_email]
         )
         return super(LeadCreateView, self).form_valid(form)
 

@@ -30,6 +30,8 @@ class AgentCreateView(LoginAndAdminRequiredMixin, generic.CreateView):
         return reverse("agents:agent-list")
 
     def form_valid(self, form):
+        print("host:")
+        print(self.request.get_host())
         user = form.save(commit=False)
         user.is_agent = True
         user.is_admin = False
@@ -41,9 +43,13 @@ class AgentCreateView(LoginAndAdminRequiredMixin, generic.CreateView):
             user=user,
             organisation=current_user.organisation
         )
+
+        subject = "%s invited you to join %s on LeadBoard" % (current_user.first_name, current_user.organisation)
+        login_link = "%s/login" % self.request.get_host()
+        message = "%s invited you to join %s on LeadBoard. Login to your account to start working.\n%s" % (current_user.first_name, current_user.organisation, login_link)
         send_mail(
-            subject="%s invited you to join %s on LeadBoard" % (current_user.first_name, current_user.organisation),
-            message="%s invited you to join %s on LeadBoard. Login to your account to start working." % (current_user.first_name, current_user.organisation),
+            subject=subject,
+            message=message,
             from_email=DEFAULT_FROM_EMAIL,
             recipient_list=[user.email]
         )
