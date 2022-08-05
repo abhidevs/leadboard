@@ -30,8 +30,6 @@ class AgentCreateView(LoginAndAdminRequiredMixin, generic.CreateView):
         return reverse("agents:agent-list")
 
     def form_valid(self, form):
-        print("host:")
-        print(self.request.get_host())
         user = form.save(commit=False)
         user.is_agent = True
         user.is_admin = False
