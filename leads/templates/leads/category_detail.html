@@ -1,32 +1,72 @@
 {% extends 'base.html' %} {% block content %}
+
 <section class="text-gray-600 body-font">
-    <div class="container px-5 py-24 mx-auto">
-      <div class="flex flex-col text-center w-full mb-20">
-        <h1 class="sm:text-4xl text-3xl font-medium title-font mb-2 text-gray-900">{{ category.name }}</h1>
-        <p class="lg:w-2/3 mx-auto leading-relaxed text-base">All leads under {{ category.name }} category</p>
+  <div class="container px-5 py-24 mx-auto">
+    <div
+      class="flex justify-between items-center gap-4 w-full lg:w-3/4 mx-auto mb-20"
+    >
+      <div class="flex-1 text-left">
+        <h1
+          class="sm:text-4xl text-3xl font-medium title-font mb-2 text-gray-900"
+        >
+          {{ category.name }}
+        </h1>
+        <p class="lg:w-2/3 leading-relaxed text-base">
+          All leads under {{ category.name }} category
+        </p>
       </div>
-      <div class="lg:w-2/3 w-full mx-auto overflow-auto">
-        <table class="table-auto w-full text-left whitespace-no-wrap">
-          <thead>
-            <tr>
-              <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl">Name</th>
-              <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">Age</th>
-              <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">Agent</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for lead in category.leads.all %}
-                <tr>
-                    <td class="px-4 py-3">
-                        <a href="{% url 'leads:lead-detail' lead.pk %}" class="text-indigo-500 hover:text-gray-500">{{ lead.first_name }} {{ lead.last_name }}</a>
-                    </td>
-                    <td class="px-4 py-3">{{ lead.age }}</td>
-                    <td class="px-4 py-3">{{ lead.agent.user }}</td>
-                </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+      <a
+        class="text-indigo-500 hover:bg-indigo-500 hover:text-white px-6 py-2 rounded-full border-2 border-indigo-500"
+        href="{% url 'leads:category-update' category.pk %}"
+        >
+        Edit
+      </a>
+      <a
+        class="text-indigo-500 hover:bg-indigo-500 hover:text-white px-6 py-2 rounded-full border-2 border-indigo-500"
+        href="{% url 'leads:category-delete' category.pk %}"
+        >
+        Delete
+      </a>
     </div>
-  </section>
+    <div class="lg:w-2/3 w-full mx-auto overflow-auto">
+      <table class="table-auto w-full text-left whitespace-no-wrap">
+        <thead>
+          <tr>
+            <th
+              class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100 rounded-tl rounded-bl"
+            >
+              Name
+            </th>
+            <th
+              class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100"
+            >
+              Age
+            </th>
+            <th
+              class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100"
+            >
+              Agent
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for lead in category.leads.all %}
+          <tr>
+            <td class="px-4 py-3">
+              <a
+                href="{% url 'leads:lead-detail' lead.pk %}"
+                class="text-indigo-500 hover:text-gray-500"
+                >{{ lead.first_name }} {{ lead.last_name }}</a
+              >
+            </td>
+            <td class="px-4 py-3">{{ lead.age }}</td>
+            <td class="px-4 py-3">{{ lead.agent.user }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
 {% endblock content %}

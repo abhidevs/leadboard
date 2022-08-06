@@ -44,7 +44,7 @@
                 </tr>
               </thead>
               <tbody>
-                {% for agent in object_list %}
+                {% for agent in agents %}
                 <tr class="bg-white">
                   <td
                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-500"
@@ -67,6 +67,10 @@
                     </a>
                   </td>
                 </tr>
+
+                {% empty %}
+                <p class="text-center">There are currently no assigned leads</p>
+
                 {% endfor %}
               </tbody>
             </table>

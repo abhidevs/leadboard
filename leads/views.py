@@ -8,7 +8,7 @@ import environ
 
 from leads.forms import LeadForm, LeadModelForm
 from .models import Agent, Category, Lead
-from .forms import AssignAgentForm, CustomUserCreationForm, LeadCategoryUpdateForm
+from .forms import AssignAgentForm, CategoryModelForm, CustomUserCreationForm, LeadCategoryUpdateForm
 
 
 env = environ.Env()
@@ -172,6 +172,59 @@ class CategoryListView(LoginRequiredMixin, generic.ListView):
             queryset = queryset.filter(organisation=user.agent.organisation)
         
         return queryset
+
+
+class CategoryCreateView(LoginAndAdminRequiredMixin, generic.CreateView):
+    template_name = "leads/category_create.html"
+    form_class = CategoryModelForm
+
+    def get_success_url(self):
+        return reverse("leads:category-list")
+        
+    def form_valid(self, form):
+        category = form.save(commit=False)
+        category.organisation = self.request.user.organisation
+        category.save()
+        return super(CategoryCreateView, self).form_valid(form)
+
+
+class CategoryUpdateView(LoginAndAdminRequiredMixin, generic.UpdateView):
+    template_name = "leads/category_update.html"
+    context_object_name = "category"
+    form_class = CategoryModelForm     
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Category.objects.all()
+
+        if user.is_admin:
+            queryset = queryset.filter(organisation=user.organisation)
+        elif user.is_agent:
+            queryset = queryset.filter(organisation=user.agent.organisation)
+        
+        return queryset
+
+    def get_success_url(self):
+        return reverse("leads:category-detail", kwargs={"pk": self.get_object().id})
+
+
+class CategoryDeleteView(LoginAndAdminRequiredMixin, generic.DeleteView):
+    template_name = "leads/category_delete.html"
+    context_object_name = "category"
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = Category.objects.all()
+
+        if user.is_admin:
+            queryset = queryset.filter(organisation=user.organisation)
+        elif user.is_agent:
+            queryset = queryset.filter(organisation=user.agent.organisation)
+        
+        return queryset
+
+    def get_success_url(self):
+        return reverse("leads:category-list")
 
 
 class CategoryDetailView(generic.DetailView):
